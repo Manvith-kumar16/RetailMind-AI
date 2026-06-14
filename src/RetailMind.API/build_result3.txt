@@ -1,0 +1,15 @@
+  Determining projects to restore...
+/app/RetailMind.API.csproj : warning NU1903: Package 'AutoMapper' 14.0.0 has a known high severity vulnerability, https://github.com/advisories/GHSA-rvv3-g6hj-g44x
+  Restored /app/RetailMind.API.csproj (in 31.79 sec).
+/app/RetailMind.API.csproj : warning NU1903: Package 'AutoMapper' 14.0.0 has a known high severity vulnerability, https://github.com/advisories/GHSA-rvv3-g6hj-g44x
+/app/Program.cs(241,10): error CS0411: The type arguments for method 'NpgsqlServiceCollectionExtensions.AddNpgsql<TContext>(IServiceCollection, string?, Action<NpgsqlDbContextOptionsBuilder>?, Action<DbContextOptionsBuilder>?)' cannot be inferred from the usage. Try specifying the type arguments explicitly. [/app/RetailMind.API.csproj]
+
+Build FAILED.
+
+/app/RetailMind.API.csproj : warning NU1903: Package 'AutoMapper' 14.0.0 has a known high severity vulnerability, https://github.com/advisories/GHSA-rvv3-g6hj-g44x
+/app/RetailMind.API.csproj : warning NU1903: Package 'AutoMapper' 14.0.0 has a known high severity vulnerability, https://github.com/advisories/GHSA-rvv3-g6hj-g44x
+/app/Program.cs(241,10): error CS0411: The type arguments for method 'NpgsqlServiceCollectionExtensions.AddNpgsql<TContext>(IServiceCollection, string?, Action<NpgsqlDbContextOptionsBuilder>?, Action<DbContextOptionsBuilder>?)' cannot be inferred from the usage. Try specifying the type arguments explicitly. [/app/RetailMind.API.csproj]
+    2 Warning(s)
+    1 Error(s)
+
+Time Elapsed 00:00:46.23

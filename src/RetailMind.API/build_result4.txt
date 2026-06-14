@@ -1,0 +1,14 @@
+  Determining projects to restore...
+/app/RetailMind.API.csproj : warning NU1903: Package 'AutoMapper' 14.0.0 has a known high severity vulnerability, https://github.com/advisories/GHSA-rvv3-g6hj-g44x
+  Restored /app/RetailMind.API.csproj (in 31.43 sec).
+/app/RetailMind.API.csproj : warning NU1903: Package 'AutoMapper' 14.0.0 has a known high severity vulnerability, https://github.com/advisories/GHSA-rvv3-g6hj-g44x
+  RetailMind.API -> /app/bin/Debug/net8.0/RetailMind.API.dll
+
+Build succeeded.
+
+/app/RetailMind.API.csproj : warning NU1903: Package 'AutoMapper' 14.0.0 has a known high severity vulnerability, https://github.com/advisories/GHSA-rvv3-g6hj-g44x
+/app/RetailMind.API.csproj : warning NU1903: Package 'AutoMapper' 14.0.0 has a known high severity vulnerability, https://github.com/advisories/GHSA-rvv3-g6hj-g44x
+    2 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:52.81

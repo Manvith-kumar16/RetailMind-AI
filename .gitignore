@@ -1,0 +1,44 @@
+## .NET / ASP.NET Core
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+.vs/
+[Bb]in/
+[Oo]bj/
+packages/
+*.nupkg
+*.snupkg
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+## Logs
+Logs/
+*.log
+
+## Secrets / Environment
+appsettings.Development.json
+*.pfx
+*.pem
+*.key
+.env
+.env.*
+secrets.json
+
+## Rider
+.idea/
+
+## VS Code
+.vscode/
+!.vscode/extensions.json
+!.vscode/launch.json
+!.vscode/tasks.json
+
+## OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+## EF Migrations (keep Migrations folder, exclude snapshots binaries)
+*.Designer.cs is excluded by bin rule above

@@ -1,0 +1,15 @@
+  Determining projects to restore...
+/app/RetailMind.API.csproj : warning NU1903: Package 'AutoMapper' 14.0.0 has a known high severity vulnerability, https://github.com/advisories/GHSA-rvv3-g6hj-g44x
+  Restored /app/RetailMind.API.csproj (in 34.74 sec).
+/app/RetailMind.API.csproj : warning NU1903: Package 'AutoMapper' 14.0.0 has a known high severity vulnerability, https://github.com/advisories/GHSA-rvv3-g6hj-g44x
+/app/Program.cs(242,20): error CS1739: The best overload for 'AddNpgsql' does not have a parameter named 'name' [/app/RetailMind.API.csproj]
+
+Build FAILED.
+
+/app/RetailMind.API.csproj : warning NU1903: Package 'AutoMapper' 14.0.0 has a known high severity vulnerability, https://github.com/advisories/GHSA-rvv3-g6hj-g44x
+/app/RetailMind.API.csproj : warning NU1903: Package 'AutoMapper' 14.0.0 has a known high severity vulnerability, https://github.com/advisories/GHSA-rvv3-g6hj-g44x
+/app/Program.cs(242,20): error CS1739: The best overload for 'AddNpgsql' does not have a parameter named 'name' [/app/RetailMind.API.csproj]
+    2 Warning(s)
+    1 Error(s)
+
+Time Elapsed 00:00:48.86

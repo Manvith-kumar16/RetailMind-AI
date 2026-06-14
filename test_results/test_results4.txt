@@ -1,0 +1,14 @@
+  Determining projects to restore...
+/app/src/RetailMind.API/RetailMind.API.csproj : warning NU1903: Package 'AutoMapper' 14.0.0 has a known high severity vulnerability, https://github.com/advisories/GHSA-rvv3-g6hj-g44x [/app/tests/RetailMind.Tests/RetailMind.Tests.csproj]
+  Restored /app/tests/RetailMind.Tests/RetailMind.Tests.csproj (in 38.05 sec).
+  Restored /app/src/RetailMind.API/RetailMind.API.csproj (in 38.04 sec).
+/app/src/RetailMind.API/RetailMind.API.csproj : warning NU1903: Package 'AutoMapper' 14.0.0 has a known high severity vulnerability, https://github.com/advisories/GHSA-rvv3-g6hj-g44x
+  RetailMind.API -> /app/src/RetailMind.API/bin/Debug/net8.0/RetailMind.API.dll
+  RetailMind.Tests -> /app/tests/RetailMind.Tests/bin/Debug/net8.0/RetailMind.Tests.dll
+Test run for /app/tests/RetailMind.Tests/bin/Debug/net8.0/RetailMind.Tests.dll (.NETCoreApp,Version=v8.0)
+VSTest version 17.11.1 (x64)
+
+Starting test execution, please wait...
+A total of 1 test files matched the specified pattern.
+
+Passed!  - Failed:     0, Passed:     6, Skipped:     0, Total:     6, Duration: 387 ms - RetailMind.Tests.dll (net8.0)

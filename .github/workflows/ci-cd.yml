@@ -1,0 +1,88 @@
+name: RetailMind AI — CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME_API: ${{ github.repository_owner }}/retailmind-api
+  IMAGE_NAME_ML: ${{ github.repository_owner }}/retailmind-ml
+
+jobs:
+  # ── Phase 1: Build & Test ──────────────────────────────────────────────
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET 8 SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Restore dependencies
+        run: dotnet restore RetailMind.sln
+
+      - name: Build Solution
+        run: dotnet build RetailMind.sln --configuration Release --no-restore
+
+      - name: Run Unit Tests
+        run: dotnet test tests/RetailMind.Tests/RetailMind.Tests.csproj --configuration Release --no-build --verbosity normal
+
+  # ── Phase 2: Docker Delivery ───────────────────────────────────────────
+  build-and-push-docker:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Log into Registry ${{ env.REGISTRY }}
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata (tags, labels) for API
+        id: meta-api
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_API }}
+          tags: |
+            type=raw,value=latest
+            type=sha,format=short
+
+      - name: Build and Push RetailMind API
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: ${{ steps.meta-api.outputs.tags }}
+          labels: ${{ steps.meta-api.outputs.labels }}
+
+      - name: Extract metadata (tags, labels) for ML
+        id: meta-ml
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_ML }}
+          tags: |
+            type=raw,value=latest
+            type=sha,format=short
+
+      - name: Build and Push RetailMind ML (Python)
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./python_api/Dockerfile
+          push: true
+          tags: ${{ steps.meta-ml.outputs.tags }}
+          labels: ${{ steps.meta-ml.outputs.labels }}

@@ -1,0 +1,12 @@
+  Determining projects to restore...
+/app/src/RetailMind.API/RetailMind.API.csproj : warning NU1903: Package 'AutoMapper' 14.0.0 has a known high severity vulnerability, https://github.com/advisories/GHSA-rvv3-g6hj-g44x [/app/tests/RetailMind.Tests/RetailMind.Tests.csproj]
+  Restored /app/tests/RetailMind.Tests/RetailMind.Tests.csproj (in 35.69 sec).
+  Restored /app/src/RetailMind.API/RetailMind.API.csproj (in 35.68 sec).
+/app/src/RetailMind.API/RetailMind.API.csproj : warning NU1903: Package 'AutoMapper' 14.0.0 has a known high severity vulnerability, https://github.com/advisories/GHSA-rvv3-g6hj-g44x
+  RetailMind.API -> /app/src/RetailMind.API/bin/Debug/net8.0/RetailMind.API.dll
+/app/tests/RetailMind.Tests/Services/OrderServiceTests.cs(53,27): error CS7036: There is no argument given that corresponds to the required parameter 'Type' of 'CreateOrderDto.CreateOrderDto(OrderType, IEnumerable<CreateOrderItemDto>, string?, DateTime?)' [/app/tests/RetailMind.Tests/RetailMind.Tests.csproj]
+/app/tests/RetailMind.Tests/Services/OrderServiceTests.cs(56,34): error CS0246: The type or namespace name 'OrderItemRequestDto' could not be found (are you missing a using directive or an assembly reference?) [/app/tests/RetailMind.Tests/RetailMind.Tests.csproj]
+/app/tests/RetailMind.Tests/Services/OrderServiceTests.cs(58,25): error CS0246: The type or namespace name 'OrderItemRequestDto' could not be found (are you missing a using directive or an assembly reference?) [/app/tests/RetailMind.Tests/RetailMind.Tests.csproj]
+/app/tests/RetailMind.Tests/Services/OrderServiceTests.cs(99,27): error CS7036: There is no argument given that corresponds to the required parameter 'Type' of 'CreateOrderDto.CreateOrderDto(OrderType, IEnumerable<CreateOrderItemDto>, string?, DateTime?)' [/app/tests/RetailMind.Tests/RetailMind.Tests.csproj]
+/app/tests/RetailMind.Tests/Services/OrderServiceTests.cs(102,34): error CS0246: The type or namespace name 'OrderItemRequestDto' could not be found (are you missing a using directive or an assembly reference?) [/app/tests/RetailMind.Tests/RetailMind.Tests.csproj]
+/app/tests/RetailMind.Tests/Services/OrderServiceTests.cs(104,25): error CS0246: The type or namespace name 'OrderItemRequestDto' could not be found (are you missing a using directive or an assembly reference?) [/app/tests/RetailMind.Tests/RetailMind.Tests.csproj]

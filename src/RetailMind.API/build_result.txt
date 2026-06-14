@@ -1,0 +1,19 @@
+  Determining projects to restore...
+/app/RetailMind.API.csproj : warning NU1903: Package 'AutoMapper' 13.0.1 has a known high severity vulnerability, https://github.com/advisories/GHSA-rvv3-g6hj-g44x
+  Restored /app/RetailMind.API.csproj (in 30.44 sec).
+/app/RetailMind.API.csproj : warning NU1903: Package 'AutoMapper' 13.0.1 has a known high severity vulnerability, https://github.com/advisories/GHSA-rvv3-g6hj-g44x
+/app/Data/AppDbContext.cs(71,14): error CS1061: 'DbContextOptionsBuilder' does not contain a definition for 'UseSnakeCaseNamingConvention' and no accessible extension method 'UseSnakeCaseNamingConvention' accepting a first argument of type 'DbContextOptionsBuilder' could be found (are you missing a using directive or an assembly reference?) [/app/RetailMind.API.csproj]
+/app/Program.cs(150,17): error CS1061: 'RateLimiterOptions' does not contain a definition for 'AddFixedWindowLimiter' and no accessible extension method 'AddFixedWindowLimiter' accepting a first argument of type 'RateLimiterOptions' could be found (are you missing a using directive or an assembly reference?) [/app/RetailMind.API.csproj]
+/app/Program.cs(241,20): error CS1739: The best overload for 'AddNpgsql' does not have a parameter named 'name' [/app/RetailMind.API.csproj]
+
+Build FAILED.
+
+/app/RetailMind.API.csproj : warning NU1903: Package 'AutoMapper' 13.0.1 has a known high severity vulnerability, https://github.com/advisories/GHSA-rvv3-g6hj-g44x
+/app/RetailMind.API.csproj : warning NU1903: Package 'AutoMapper' 13.0.1 has a known high severity vulnerability, https://github.com/advisories/GHSA-rvv3-g6hj-g44x
+/app/Data/AppDbContext.cs(71,14): error CS1061: 'DbContextOptionsBuilder' does not contain a definition for 'UseSnakeCaseNamingConvention' and no accessible extension method 'UseSnakeCaseNamingConvention' accepting a first argument of type 'DbContextOptionsBuilder' could be found (are you missing a using directive or an assembly reference?) [/app/RetailMind.API.csproj]
+/app/Program.cs(150,17): error CS1061: 'RateLimiterOptions' does not contain a definition for 'AddFixedWindowLimiter' and no accessible extension method 'AddFixedWindowLimiter' accepting a first argument of type 'RateLimiterOptions' could be found (are you missing a using directive or an assembly reference?) [/app/RetailMind.API.csproj]
+/app/Program.cs(241,20): error CS1739: The best overload for 'AddNpgsql' does not have a parameter named 'name' [/app/RetailMind.API.csproj]
+    2 Warning(s)
+    3 Error(s)
+
+Time Elapsed 00:00:45.74
