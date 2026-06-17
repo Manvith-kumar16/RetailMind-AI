@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
-import { Mail, Lock, AlertCircle, ArrowRight, Loader2 } from 'lucide-react';
+import { Mail, Lock, AlertCircle, ArrowRight, Loader2, Eye, EyeOff } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { cn } from '../../utils/cn';
 
@@ -19,6 +19,7 @@ export function Login() {
   const location = useLocation();
   const { login } = useAuth();
   const [serverError, setServerError] = useState<string | null>(null);
+  const [showPassword, setShowPassword] = useState(false);
   
   const from = location.state?.from?.pathname || '/';
 
@@ -109,15 +110,22 @@ export function Login() {
                 </div>
                 <input
                   id="password"
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   placeholder="••••••••"
                   className={cn(
-                    "block w-full rounded-xl border bg-surface-50 p-3 pl-11 text-sm text-slate-900 transition-all placeholder:text-slate-400",
+                    "block w-full rounded-xl border bg-surface-50 p-3 pl-11 pr-11 text-sm text-slate-900 transition-all placeholder:text-slate-400",
                     "focus:border-primary-500 focus:bg-white focus:outline-none focus:ring-4 focus:ring-primary-500/10",
                     errors.password ? "border-red-300 focus:border-red-500 focus:ring-red-500/10" : "border-slate-200"
                   )}
                   {...register('password')}
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute inset-y-0 right-0 flex items-center pr-3.5 text-slate-400 hover:text-slate-600 focus:outline-none"
+                >
+                  {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                </button>
               </div>
               {errors.password && (
                 <p className="text-xs font-medium text-red-500 mt-1.5 ml-1">{errors.password.message}</p>
