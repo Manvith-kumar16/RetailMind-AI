@@ -4,7 +4,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useNavigate, Link } from 'react-router-dom';
 import { Mail, Lock, User, AlertCircle, ArrowRight, Loader2 } from 'lucide-react';
-import { api } from '../../services/api';
 import { useAuth } from '../../context/AuthContext';
 import { cn } from '../../utils/cn';
 
@@ -22,7 +21,7 @@ type RegisterFormValues = z.infer<typeof registerSchema>;
 
 export function Register() {
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const { register: registerAuth } = useAuth();
   const [serverError, setServerError] = useState<string | null>(null);
 
   const {
@@ -36,31 +35,10 @@ export function Register() {
   const onSubmit = async (data: RegisterFormValues) => {
     try {
       setServerError(null);
-      
-      let token = 'mock_jwt_token_12345';
-      let user = { id: '1', name: data.name, email: data.email, role: 'admin' };
-
-      try {
-        const response = await api.post('/auth/register', {
-          name: data.name,
-          email: data.email,
-          password: data.password
-        });
-        
-        if (response.data?.token) {
-          token = response.data.token;
-          user = response.data.user || user;
-        }
-      } catch (err: any) {
-        console.warn('API endpoint not found or error, using fallback mock token for demo', err);
-        // Simulating network delay
-        await new Promise(resolve => setTimeout(resolve, 800));
-      }
-
-      login(token, user);
+      await registerAuth(data.email, data.password);
       navigate('/');
-    } catch (error) {
-      setServerError('An unexpected error occurred. Please try again.');
+    } catch (error: any) {
+      setServerError(error.message || 'An unexpected error occurred. Please try again.');
     }
   };
 
