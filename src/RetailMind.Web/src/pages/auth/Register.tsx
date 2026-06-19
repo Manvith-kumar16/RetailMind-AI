@@ -39,7 +39,7 @@ export function Register() {
     try {
       setServerError(null);
       setSuccessMessage(null);
-      await registerAuth(data.email, data.password);
+      await registerAuth(data.email, data.password, data.name);
       setSuccessMessage('Workspace created successfully! Redirecting...');
       setTimeout(() => navigate('/'), 2000);
     } catch (error: any) {

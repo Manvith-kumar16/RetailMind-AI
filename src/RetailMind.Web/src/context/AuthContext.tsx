@@ -7,14 +7,15 @@ import {
   sendPasswordResetEmail,
   onAuthStateChanged
 } from 'firebase/auth';
-import { auth } from '../firebase/config';
+import { doc, setDoc, getDoc, serverTimestamp } from 'firebase/firestore';
+import { auth, db } from '../firebase/config';
 
 interface AuthContextType {
   currentUser: FirebaseUser | null;
   isAuthenticated: boolean;
   isLoading: boolean;
   login: (email: string, password: string) => Promise<UserCredential>;
-  register: (email: string, password: string) => Promise<UserCredential>;
+  register: (email: string, password: string, name: string) => Promise<UserCredential>;
   logout: () => Promise<void>;
   resetPassword: (email: string) => Promise<void>;
 }
@@ -29,8 +30,24 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return signInWithEmailAndPassword(auth, email, password);
   };
 
-  const register = (email: string, password: string) => {
-    return createUserWithEmailAndPassword(auth, email, password);
+  const register = async (email: string, password: string, name: string) => {
+    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    const user = userCredential.user;
+    
+    const userDocRef = doc(db, 'users', user.uid);
+    const userDoc = await getDoc(userDocRef);
+    
+    if (!userDoc.exists()) {
+      await setDoc(userDocRef, {
+        uid: user.uid,
+        name: name,
+        email: user.email,
+        role: "owner",
+        createdAt: serverTimestamp()
+      });
+    }
+    
+    return userCredential;
   };
 
   const logout = () => {
