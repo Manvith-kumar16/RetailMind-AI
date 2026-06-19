@@ -3,8 +3,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useNavigate, Link } from 'react-router-dom';
-import { Mail, Lock, User, AlertCircle, ArrowRight, Loader2 } from 'lucide-react';
-import { api } from '../../services/api';
+import { Mail, Lock, User, AlertCircle, ArrowRight, Loader2, Eye, EyeOff, CheckCircle2 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { cn } from '../../utils/cn';
 
@@ -22,8 +21,11 @@ type RegisterFormValues = z.infer<typeof registerSchema>;
 
 export function Register() {
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const { register: registerAuth } = useAuth();
   const [serverError, setServerError] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const {
     register,
@@ -36,31 +38,12 @@ export function Register() {
   const onSubmit = async (data: RegisterFormValues) => {
     try {
       setServerError(null);
-      
-      let token = 'mock_jwt_token_12345';
-      let user = { id: '1', name: data.name, email: data.email, role: 'admin' };
-
-      try {
-        const response = await api.post('/auth/register', {
-          name: data.name,
-          email: data.email,
-          password: data.password
-        });
-        
-        if (response.data?.token) {
-          token = response.data.token;
-          user = response.data.user || user;
-        }
-      } catch (err: any) {
-        console.warn('API endpoint not found or error, using fallback mock token for demo', err);
-        // Simulating network delay
-        await new Promise(resolve => setTimeout(resolve, 800));
-      }
-
-      login(token, user);
-      navigate('/');
-    } catch (error) {
-      setServerError('An unexpected error occurred. Please try again.');
+      setSuccessMessage(null);
+      await registerAuth(data.email, data.password, data.name);
+      setSuccessMessage('Workspace created successfully! Redirecting...');
+      setTimeout(() => navigate('/'), 2000);
+    } catch (error: any) {
+      setServerError(error.message || 'An unexpected error occurred. Please try again.');
     }
   };
 
@@ -90,6 +73,13 @@ export function Register() {
               <div className="flex items-center gap-3 rounded-lg bg-red-50 p-4 text-sm text-red-600 border border-red-100">
                 <AlertCircle className="h-5 w-5 flex-shrink-0" />
                 <p>{serverError}</p>
+              </div>
+            )}
+
+            {successMessage && (
+              <div className="flex items-center gap-3 rounded-lg bg-green-50 p-4 text-sm text-green-600 border border-green-100">
+                <CheckCircle2 className="h-5 w-5 flex-shrink-0" />
+                <p>{successMessage}</p>
               </div>
             )}
 
@@ -153,15 +143,22 @@ export function Register() {
                 </div>
                 <input
                   id="password"
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   placeholder="••••••••"
                   className={cn(
-                    "block w-full rounded-xl border bg-surface-50 p-3 pl-11 text-sm text-slate-900 transition-all placeholder:text-slate-400",
+                    "block w-full rounded-xl border bg-surface-50 p-3 pl-11 pr-11 text-sm text-slate-900 transition-all placeholder:text-slate-400",
                     "focus:border-primary-500 focus:bg-white focus:outline-none focus:ring-4 focus:ring-primary-500/10",
                     errors.password ? "border-red-300 focus:border-red-500 focus:ring-red-500/10" : "border-slate-200"
                   )}
                   {...register('password')}
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute inset-y-0 right-0 flex items-center pr-3.5 text-slate-400 hover:text-slate-600 focus:outline-none"
+                >
+                  {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                </button>
               </div>
               {errors.password && (
                 <p className="text-xs font-medium text-red-500 mt-1.5 ml-1">{errors.password.message}</p>
@@ -178,15 +175,22 @@ export function Register() {
                 </div>
                 <input
                   id="confirmPassword"
-                  type="password"
+                  type={showConfirmPassword ? "text" : "password"}
                   placeholder="••••••••"
                   className={cn(
-                    "block w-full rounded-xl border bg-surface-50 p-3 pl-11 text-sm text-slate-900 transition-all placeholder:text-slate-400",
+                    "block w-full rounded-xl border bg-surface-50 p-3 pl-11 pr-11 text-sm text-slate-900 transition-all placeholder:text-slate-400",
                     "focus:border-primary-500 focus:bg-white focus:outline-none focus:ring-4 focus:ring-primary-500/10",
                     errors.confirmPassword ? "border-red-300 focus:border-red-500 focus:ring-red-500/10" : "border-slate-200"
                   )}
                   {...register('confirmPassword')}
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  className="absolute inset-y-0 right-0 flex items-center pr-3.5 text-slate-400 hover:text-slate-600 focus:outline-none"
+                >
+                  {showConfirmPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                </button>
               </div>
               {errors.confirmPassword && (
                 <p className="text-xs font-medium text-red-500 mt-1.5 ml-1">{errors.confirmPassword.message}</p>

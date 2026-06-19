@@ -1,63 +1,86 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-
-// Types
-export interface User {
-  id: string;
-  name: string;
-  email: string;
-  role?: string;
-}
+import React, { createContext, useContext, useEffect, useState } from 'react';
+import type { User as FirebaseUser, UserCredential } from 'firebase/auth';
+import { 
+  signInWithEmailAndPassword, 
+  createUserWithEmailAndPassword, 
+  signOut, 
+  sendPasswordResetEmail,
+  onAuthStateChanged
+} from 'firebase/auth';
+import { doc, setDoc, getDoc, serverTimestamp } from 'firebase/firestore';
+import { auth, db } from '../firebase/config';
 
 interface AuthContextType {
-  user: User | null;
+  currentUser: FirebaseUser | null;
   isAuthenticated: boolean;
   isLoading: boolean;
-  login: (token: string, userData: User) => void;
-  logout: () => void;
+  login: (email: string, password: string) => Promise<UserCredential>;
+  register: (email: string, password: string, name: string) => Promise<UserCredential>;
+  logout: () => Promise<void>;
+  resetPassword: (email: string) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<User | null>(null);
+  const [currentUser, setCurrentUser] = useState<FirebaseUser | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  // Initial load: check if user is already logged in
-  useEffect(() => {
-    const initializeAuth = async () => {
-      try {
-        const storedToken = localStorage.getItem('retailmind_token');
-        const storedUser = localStorage.getItem('retailmind_user');
+  const login = (email: string, password: string) => {
+    return signInWithEmailAndPassword(auth, email, password);
+  };
 
-        if (storedToken && storedUser) {
-          setUser(JSON.parse(storedUser));
-        }
-      } catch (error) {
-        console.error('Failed to initialize auth state', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    initializeAuth();
-  }, []);
-
-  const login = (token: string, userData: User) => {
-    localStorage.setItem('retailmind_token', token);
-    localStorage.setItem('retailmind_user', JSON.stringify(userData));
-    setUser(userData);
+  const register = async (email: string, password: string, name: string) => {
+    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    const user = userCredential.user;
+    
+    const userDocRef = doc(db, 'users', user.uid);
+    const userDoc = await getDoc(userDocRef);
+    
+    if (!userDoc.exists()) {
+      await setDoc(userDocRef, {
+        uid: user.uid,
+        name: name,
+        email: user.email,
+        role: "owner",
+        createdAt: serverTimestamp()
+      });
+    }
+    
+    return userCredential;
   };
 
   const logout = () => {
-    localStorage.removeItem('retailmind_token');
-    localStorage.removeItem('retailmind_user');
-    setUser(null);
+    return signOut(auth);
   };
 
-  const isAuthenticated = !!user;
+  const resetPassword = (email: string) => {
+    return sendPasswordResetEmail(auth, email);
+  };
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setCurrentUser(user);
+      setIsLoading(false);
+    });
+
+    return unsubscribe;
+  }, []);
+
+  const isAuthenticated = !!currentUser;
+
+  const value = {
+    currentUser,
+    isAuthenticated,
+    isLoading,
+    login,
+    register,
+    logout,
+    resetPassword
+  };
 
   return (
-    <AuthContext.Provider value={{ user, isAuthenticated, isLoading, login, logout }}>
+    <AuthContext.Provider value={value}>
       {children}
     </AuthContext.Provider>
   );

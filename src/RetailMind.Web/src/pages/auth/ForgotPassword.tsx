@@ -2,42 +2,38 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { useNavigate, useLocation, Link } from 'react-router-dom';
-import { Mail, Lock, AlertCircle, ArrowRight, Loader2, Eye, EyeOff } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Mail, AlertCircle, ArrowRight, Loader2, CheckCircle2 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { cn } from '../../utils/cn';
 
-const loginSchema = z.object({
+const forgotPasswordSchema = z.object({
   email: z.string().email('Please enter a valid email address'),
-  password: z.string().min(6, 'Password must be at least 6 characters'),
 });
 
-type LoginFormValues = z.infer<typeof loginSchema>;
+type ForgotPasswordFormValues = z.infer<typeof forgotPasswordSchema>;
 
-export function Login() {
-  const navigate = useNavigate();
-  const location = useLocation();
-  const { login } = useAuth();
+export function ForgotPassword() {
+  const { resetPassword } = useAuth();
   const [serverError, setServerError] = useState<string | null>(null);
-  const [showPassword, setShowPassword] = useState(false);
-  
-  const from = location.state?.from?.pathname || '/';
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<LoginFormValues>({
-    resolver: zodResolver(loginSchema),
+  } = useForm<ForgotPasswordFormValues>({
+    resolver: zodResolver(forgotPasswordSchema),
   });
 
-  const onSubmit = async (data: LoginFormValues) => {
+  const onSubmit = async (data: ForgotPasswordFormValues) => {
     try {
       setServerError(null);
-      await login(data.email, data.password);
-      navigate(from, { replace: true });
+      setSuccessMessage(null);
+      await resetPassword(data.email);
+      setSuccessMessage('Password reset email sent. Please check your inbox.');
     } catch (error: any) {
-      setServerError(error.message || 'Invalid email or password.');
+      setServerError(error.message || 'An unexpected error occurred. Please try again.');
     }
   };
 
@@ -55,8 +51,8 @@ export function Login() {
           <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary-600 text-white shadow-xl shadow-primary-600/20 mb-4">
             <span className="text-xl font-bold tracking-tight">RM</span>
           </div>
-          <h2 className="text-2xl font-bold text-slate-900 tracking-tight">Welcome back</h2>
-          <p className="mt-2 text-sm text-slate-500 font-medium">Log in to your RetailMind AI workspace</p>
+          <h2 className="text-2xl font-bold text-slate-900 tracking-tight">Reset Password</h2>
+          <p className="mt-2 text-sm text-slate-500 font-medium text-center">Enter your email and we'll send you a link to reset your password</p>
         </div>
 
         {/* Card */}
@@ -67,6 +63,13 @@ export function Login() {
               <div className="flex items-center gap-3 rounded-lg bg-red-50 p-4 text-sm text-red-600 border border-red-100">
                 <AlertCircle className="h-5 w-5 flex-shrink-0" />
                 <p>{serverError}</p>
+              </div>
+            )}
+            
+            {successMessage && (
+              <div className="flex items-center gap-3 rounded-lg bg-green-50 p-4 text-sm text-green-600 border border-green-100">
+                <CheckCircle2 className="h-5 w-5 flex-shrink-0" />
+                <p>{successMessage}</p>
               </div>
             )}
 
@@ -95,43 +98,6 @@ export function Login() {
               )}
             </div>
 
-            <div className="space-y-1.5">
-              <div className="flex items-center justify-between">
-                <label className="text-sm font-semibold text-slate-700" htmlFor="password">
-                  Password
-                </label>
-                <Link to="/forgot-password" className="text-sm font-medium text-primary-600 hover:text-primary-700 hover:underline">
-                  Forgot password?
-                </Link>
-              </div>
-              <div className="relative group">
-                <div className="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none">
-                  <Lock className={cn("h-5 w-5 transition-colors", errors.password ? "text-red-400" : "text-slate-400 group-focus-within:text-primary-500")} />
-                </div>
-                <input
-                  id="password"
-                  type={showPassword ? "text" : "password"}
-                  placeholder="••••••••"
-                  className={cn(
-                    "block w-full rounded-xl border bg-surface-50 p-3 pl-11 pr-11 text-sm text-slate-900 transition-all placeholder:text-slate-400",
-                    "focus:border-primary-500 focus:bg-white focus:outline-none focus:ring-4 focus:ring-primary-500/10",
-                    errors.password ? "border-red-300 focus:border-red-500 focus:ring-red-500/10" : "border-slate-200"
-                  )}
-                  {...register('password')}
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute inset-y-0 right-0 flex items-center pr-3.5 text-slate-400 hover:text-slate-600 focus:outline-none"
-                >
-                  {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
-                </button>
-              </div>
-              {errors.password && (
-                <p className="text-xs font-medium text-red-500 mt-1.5 ml-1">{errors.password.message}</p>
-              )}
-            </div>
-
             <button
               type="submit"
               disabled={isSubmitting}
@@ -140,11 +106,11 @@ export function Login() {
               {isSubmitting ? (
                 <>
                   <Loader2 className="h-5 w-5 animate-spin" />
-                  <span>Signing in...</span>
+                  <span>Sending...</span>
                 </>
               ) : (
                 <>
-                  <span>Sign in</span>
+                  <span>Send reset link</span>
                   <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                 </>
               )}
@@ -152,9 +118,9 @@ export function Login() {
           </form>
           
           <div className="mt-8 text-center text-sm font-medium text-slate-500">
-            Don't have an account?{' '}
-            <Link to="/register" className="text-primary-600 hover:text-primary-700 hover:underline">
-              Create workspace
+            Remember your password?{' '}
+            <Link to="/login" className="text-primary-600 hover:text-primary-700 hover:underline">
+              Sign in
             </Link>
           </div>
         </div>

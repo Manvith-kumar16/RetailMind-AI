@@ -1,7 +1,25 @@
-import { Bell, Search, User } from 'lucide-react';
+import { useState } from 'react';
+import { Bell, Search, User, LogOut, Loader2 } from 'lucide-react';
 import { Button } from '../components/ui/Button';
+import { useAuth } from '../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 export function TopNavbar() {
+  const { currentUser, logout } = useAuth();
+  const navigate = useNavigate();
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+
+  const handleLogout = async () => {
+    try {
+      setIsLoggingOut(true);
+      await logout();
+      navigate('/login', { replace: true });
+    } catch (error) {
+      console.error("Failed to log out", error);
+      setIsLoggingOut(false);
+    }
+  };
+
   return (
     <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-slate-200 bg-white/80 px-6 backdrop-blur-md">
       <div className="flex flex-1 items-center gap-4">
@@ -27,12 +45,22 @@ export function TopNavbar() {
 
         {/* Profile */}
         <div className="flex items-center gap-3 border-l border-slate-200 pl-4">
-          <div className="flex flex-col text-right">
-            <span className="text-sm font-semibold text-slate-900">Alex Administrator</span>
-            <span className="text-xs text-slate-500">Store Manager</span>
+          <div className="flex flex-col text-right hidden sm:flex">
+            <span className="text-sm font-semibold text-slate-900">{currentUser?.email || 'User'}</span>
+            <span className="text-xs text-slate-500">Workspace Member</span>
           </div>
           <Button variant="ghost" className="h-10 w-10 p-0 rounded-full bg-slate-100 hover:bg-slate-200" size="icon">
             <User className="h-5 w-5 text-slate-700" />
+          </Button>
+          <Button 
+            variant="ghost" 
+            className="h-10 w-10 p-0 rounded-full bg-red-50 hover:bg-red-100 text-red-600 ml-1 transition-colors" 
+            size="icon"
+            onClick={handleLogout}
+            disabled={isLoggingOut}
+            title="Log out"
+          >
+            {isLoggingOut ? <Loader2 className="h-5 w-5 animate-spin" /> : <LogOut className="h-5 w-5" />}
           </Button>
         </div>
       </div>
