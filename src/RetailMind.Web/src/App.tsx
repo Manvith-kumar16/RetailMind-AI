@@ -12,6 +12,10 @@ import { Orders } from './pages/Orders';
 import { Insights } from './pages/Insights';
 import { Employees } from './pages/Employees';
 
+import { Stores } from './pages/Stores';
+import { Products } from './pages/Products';
+import { ProductDetails } from './pages/ProductDetails';
+
 // Placeholder components for routing
 const Customers = () => <div className="p-6"><h1 className="text-2xl font-bold">Customer CRM</h1></div>;
 const Settings = () => <div className="p-6"><h1 className="text-2xl font-bold">System Settings</h1></div>;
@@ -32,6 +36,9 @@ function App() {
             <Route path="/" element={<DashboardLayout />}>
               <Route index element={<Dashboard />} />
               <Route path="dashboard" element={<Dashboard />} />
+              <Route path="stores" element={<Stores />} />
+              <Route path="products" element={<Products />} />
+              <Route path="products/:id" element={<ProductDetails />} />
               <Route path="orders" element={<Orders />} />
               <Route path="inventory" element={<Inventory />} />
               <Route path="insights" element={<Insights />} />
