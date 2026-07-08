@@ -7,7 +7,9 @@ import {
   deleteDoc,
   getDoc,
   getDocs,
-  query,
+  query
+} from 'firebase/firestore';
+import type {
   QueryConstraint,
   DocumentData,
   WithFieldValue,

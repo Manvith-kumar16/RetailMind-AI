@@ -17,6 +17,7 @@ export interface Store {
   storeName: string;
   category: string;
   location: string;
+  createdAt?: Timestamp;
 }
 
 export interface Product {
@@ -26,14 +27,16 @@ export interface Product {
   category: string;
   price: number;
   stock: number;
+  createdAt?: Timestamp;
 }
 
 export interface Sale {
   id?: string;
+  storeId: string;
   productId: string;
   quantity: number;
   total: number;
-  createdAt: Timestamp;
+  createdAt?: Timestamp;
 }
 
 export interface Inventory {
@@ -41,5 +44,5 @@ export interface Inventory {
   productId: string;
   currentStock: number;
   reorderLevel: number;
-  updatedAt: Timestamp;
+  updatedAt?: Timestamp;
 }

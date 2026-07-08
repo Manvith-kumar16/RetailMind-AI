@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { QueryConstraint, DocumentData, WithFieldValue, UpdateData } from 'firebase/firestore';
+import type { QueryConstraint, DocumentData, WithFieldValue, UpdateData } from 'firebase/firestore';
 import * as firestoreService from '../services/firestoreService';
 
 interface UseFirestoreResult<T> {

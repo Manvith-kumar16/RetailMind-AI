@@ -1,51 +1,103 @@
-import { TrendingUp, Users, Package, AlertTriangle, ArrowUpRight, ArrowDownRight } from 'lucide-react';
+import { useState, useEffect, useMemo } from 'react';
+import { TrendingUp, Users, Package, AlertTriangle, ArrowUpRight, ArrowDownRight, CalendarDays, Calendar as CalendarIcon, DollarSign } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 import { SalesChart } from '../components/dashboard/SalesChart';
 import { DemandForecastChart } from '../components/dashboard/DemandForecastChart';
 import { InventoryChart } from '../components/dashboard/InventoryChart';
-
-// Dummy data for the dashboard stats
-const stats = [
-  {
-    title: 'Total Revenue',
-    value: '$124,563.00',
-    change: '+12.5%',
-    trend: 'up',
-    icon: TrendingUp,
-    color: 'text-primary-600',
-    bg: 'bg-primary-50',
-  },
-  {
-    title: 'Active Users',
-    value: '2,420',
-    change: '+5.2%',
-    trend: 'up',
-    icon: Users,
-    color: 'text-emerald-600',
-    bg: 'bg-emerald-50',
-  },
-  {
-    title: 'Inventory Alerts',
-    value: '14 Items',
-    change: '-2.4%',
-    trend: 'down',
-    icon: AlertTriangle,
-    color: 'text-amber-600',
-    bg: 'bg-amber-50',
-  },
-  {
-    title: 'Orders Pending',
-    value: '84',
-    change: '+18.1%',
-    trend: 'up',
-    icon: Package,
-    color: 'text-indigo-600',
-    bg: 'bg-indigo-50',
-  },
-];
+import { useAuth } from '../context/AuthContext';
+import { useFirestore } from '../hooks/useFirestore';
+import { useRealtimeCollection } from '../hooks/useRealtimeCollection';
+import type { Store, Sale } from '../types/firestore.types';
+import { where } from 'firebase/firestore';
 
 export function Dashboard() {
+  const { currentUser } = useAuth();
+  
+  // Fetch user's stores
+  const { getAll: getStores, isLoading: storesLoading } = useFirestore<Store>('stores');
+  const [stores, setStores] = useState<Store[]>([]);
+
+  useEffect(() => {
+    async function loadStores() {
+      if (!currentUser) return;
+      const data = await getStores([where('ownerId', '==', currentUser.uid)]);
+      setStores(data);
+    }
+    loadStores();
+  }, [currentUser, getStores]);
+
+  const storeIds = useMemo(() => stores.map(s => s.id!), [stores]);
+
+  // Fetch all real-time sales
+  const { data: allSales } = useRealtimeCollection<Sale>('sales');
+
+  // Filter sales to only those belonging to the user's stores
+  const mySales = useMemo(() => {
+    return allSales.filter(sale => storeIds.includes(sale.storeId));
+  }, [allSales, storeIds]);
+
+  const { dailySales, monthlySales, totalRevenue, totalOrders } = useMemo(() => {
+    let daily = 0;
+    let monthly = 0;
+    let revenue = 0;
+    let orders = mySales.length;
+
+    const now = new Date();
+    const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).getTime();
+
+    mySales.forEach(sale => {
+      const saleTotal = sale.total || 0;
+      revenue += saleTotal;
+      
+      const saleTime = sale.createdAt ? (sale.createdAt as any).toMillis() : 0;
+      if (saleTime >= startOfDay) daily += saleTotal;
+      if (saleTime >= startOfMonth) monthly += saleTotal;
+    });
+
+    return { dailySales: daily, monthlySales: monthly, totalRevenue: revenue, totalOrders: orders };
+  }, [mySales]);
+
+  const stats = [
+    {
+      title: 'Total Revenue',
+      value: `$${totalRevenue.toFixed(2)}`,
+      change: '+12.5%',
+      trend: 'up',
+      icon: DollarSign,
+      color: 'text-primary-600',
+      bg: 'bg-primary-50',
+    },
+    {
+      title: 'Monthly Sales',
+      value: `$${monthlySales.toFixed(2)}`,
+      change: '+5.2%',
+      trend: 'up',
+      icon: CalendarDays,
+      color: 'text-emerald-600',
+      bg: 'bg-emerald-50',
+    },
+    {
+      title: 'Daily Sales',
+      value: `$${dailySales.toFixed(2)}`,
+      change: '-2.4%',
+      trend: 'down',
+      icon: CalendarIcon,
+      color: 'text-amber-600',
+      bg: 'bg-amber-50',
+    },
+    {
+      title: 'Total Orders',
+      value: totalOrders.toString(),
+      change: '+18.1%',
+      trend: 'up',
+      icon: Package,
+      color: 'text-indigo-600',
+      bg: 'bg-indigo-50',
+    },
+  ];
+
   return (
     <div className="space-y-6 animate-in fade-in duration-500">
       {/* Page Header */}
@@ -72,6 +124,7 @@ export function Dashboard() {
                     <Icon className="h-6 w-6" />
                   </div>
                   <div className={`flex items-center gap-1 text-sm font-medium ${stat.trend === 'up' ? 'text-emerald-600' : 'text-rose-600'}`}>
+                    {/* Dummy trend data for now */}
                     {stat.change}
                     {stat.trend === 'up' ? <ArrowUpRight className="h-4 w-4" /> : <ArrowDownRight className="h-4 w-4" />}
                   </div>
@@ -131,15 +184,22 @@ export function Dashboard() {
           </CardHeader>
           <CardContent className="pt-6">
             <div className="space-y-6">
-              {[1, 2, 3, 4, 5].map((i) => (
-                <div key={i} className="flex items-start gap-4">
-                  <div className="h-10 w-10 shrink-0 rounded-full animate-shimmer" />
-                  <div className="space-y-2 flex-1 pt-1 opacity-70">
-                    <div className="h-3 w-3/4 rounded-md animate-shimmer" />
-                    <div className="h-2 w-1/2 rounded-md animate-shimmer" />
+              {mySales.slice(0, 5).map((sale) => (
+                <div key={sale.id} className="flex items-start gap-4">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-green-50 text-green-600">
+                    <DollarSign className="h-5 w-5" />
+                  </div>
+                  <div className="space-y-1 flex-1">
+                    <p className="text-sm font-medium text-slate-900">Sale Recorded</p>
+                    <p className="text-xs text-slate-500">
+                      {sale.quantity} items • ${(sale.total).toFixed(2)}
+                    </p>
                   </div>
                 </div>
               ))}
+              {mySales.length === 0 && (
+                <p className="text-sm text-slate-500 text-center py-4">No recent sales</p>
+              )}
             </div>
           </CardContent>
         </Card>

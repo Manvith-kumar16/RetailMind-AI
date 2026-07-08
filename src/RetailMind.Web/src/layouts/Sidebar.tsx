@@ -1,4 +1,4 @@
-import { Box, LayoutDashboard, Settings, ShoppingCart, Users, ChevronLeft, ChevronRight, Lightbulb } from 'lucide-react';
+import { Box, LayoutDashboard, Settings, ShoppingCart, Users, ChevronLeft, ChevronRight, Lightbulb, Store, Package } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
 import { cn } from '../utils/cn';
 
@@ -9,6 +9,8 @@ interface SidebarProps {
 
 const navItems = [
   { icon: LayoutDashboard, label: 'Dashboard', path: '/' },
+  { icon: Store,           label: 'Stores',     path: '/stores' },
+  { icon: Package,         label: 'Products',   path: '/products' },
   { icon: ShoppingCart,    label: 'Orders',     path: '/orders' },
   { icon: Box,             label: 'Inventory',  path: '/inventory' },
   { icon: Users,           label: 'Employees',  path: '/employees' },
