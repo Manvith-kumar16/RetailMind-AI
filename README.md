@@ -256,3 +256,25 @@ dotnet test RetailMind.sln
 
 ## 📄 License
 This project is licensed under the MIT License - see the `LICENSE` file for details (if applicable).
+
+---
+
+## 🚀 Quick Start (Frontend & Backend)
+
+If you want to quickly start just the frontend and backend locally (without Docker), you can run these commands in separate terminal windows:
+
+**1. Start the Backend (.NET 8 API)**
+```bash
+cd src/RetailMind.API
+export ASPNETCORE_ENVIRONMENT=Development
+dotnet run
+```
+*The API and Swagger UI will be available at `http://localhost:5000` (or `http://localhost:5254`)*
+
+**2. Start the Frontend (React 19 / Vite)**
+```bash
+cd src/RetailMind.Web
+npm install
+npm run dev
+```
+*The frontend dashboard will be available at `http://localhost:5173`*
