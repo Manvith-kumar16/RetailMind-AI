@@ -31,7 +31,7 @@ public sealed class SecurityHeadersMiddleware
         headers["Referrer-Policy"] = "strict-origin-when-cross-origin";
 
         // Content Security Policy - Minimalist baseline for an API
-        headers["Content-Security-Policy"] = "default-src 'self'; frame-ancestors 'none';";
+        headers["Content-Security-Policy"] = "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; frame-ancestors 'none';";
 
         await _next(context);
     }

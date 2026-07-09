@@ -308,10 +308,6 @@ try
     // ── Request Timing Middleware ─────────────────────────────────────────────
     app.UseMiddleware<RequestTimingMiddleware>();
 
-    // ── Endpoints ────────────────────────────────────────────────────────────
-    app.MapControllers();
-    app.MapHealthChecks("/health");
-
     // ── Auto-migrate + seed on startup ───────────────────────────────────────
     using (var scope = app.Services.CreateScope())
     {
@@ -324,10 +320,14 @@ try
         await RoleSeeder.SeedAsync(scope.ServiceProvider);
     }
 
+    // ── Endpoints ────────────────────────────────────────────────────────────
+    app.MapControllers();
+    app.MapHealthChecks("/health");
+
     Log.Information("RetailMind API starting up in {Environment} mode", app.Environment.EnvironmentName);
     await app.RunAsync();
 }
-catch (Exception ex)
+catch (Exception ex) when (ex.GetType().Name != "HostAbortedException")
 {
     Log.Fatal(ex, "RetailMind API terminated unexpectedly");
 }
