@@ -151,11 +151,19 @@ export function Login() {
             </button>
           </form>
           
-          <div className="mt-8 text-center text-sm font-medium text-slate-500">
-            Don't have an account?{' '}
-            <Link to="/register" className="text-primary-600 hover:text-primary-700 hover:underline">
-              Create workspace
-            </Link>
+          <div className="mt-8 text-center text-sm font-medium text-slate-500 flex flex-col gap-2">
+            <div>
+              Don't have an account?{' '}
+              <Link to="/register" className="text-primary-600 hover:text-primary-700 hover:underline">
+                Create workspace
+              </Link>
+            </div>
+            <div>
+              New here?{' '}
+              <Link to="/onboarding" className="text-primary-600 hover:text-primary-700 hover:underline">
+                Take a quick tour
+              </Link>
+            </div>
           </div>
         </div>
       </div>

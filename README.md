@@ -188,14 +188,14 @@ docker run --name retailmind_redis -p 6379:6379 -d redis:7-alpine
 #### 2. Run Python ML Service
 ```bash
 cd python_api
-python -m venv venv
+python3 -m venv venv
 # Windows:
 .\venv\Scripts\activate
 # Unix/macOS:
 source venv/bin/activate
 
 pip install -r requirements.txt
-python main.py
+python3 main.py
 ```
 *API will run directly at `http://localhost:8000` (docs available at `http://localhost:8000/docs`).*
 
