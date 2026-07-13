@@ -1,0 +1,39 @@
+name: AI Service CI/CD
+
+on:
+  push:
+    branches: [ "main" ]
+    paths:
+      - 'AI-Service/**'
+  pull_request:
+    branches: [ "main" ]
+    paths:
+      - 'AI-Service/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./AI-Service
+
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Python 3.11
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.11"
+        cache: 'pip'
+        
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt pytest
+        
+    # - name: Test with pytest
+    #   run: |
+    #     pytest
+        
+    - name: Build Docker Image
+      run: docker build -t retailmind-ai-service:latest .
