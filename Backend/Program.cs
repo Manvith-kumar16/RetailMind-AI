@@ -66,6 +66,14 @@ try
             };
         });
 
+    // ── Response Compression ─────────────────────────────────────────────────
+    builder.Services.AddResponseCompression(options =>
+    {
+        options.EnableForHttps = true;
+        options.Providers.Add<Microsoft.AspNetCore.ResponseCompression.GzipCompressionProvider>();
+        options.Providers.Add<Microsoft.AspNetCore.ResponseCompression.BrotliCompressionProvider>();
+    });
+
     // ── FluentValidation ─────────────────────────────────────────────────────
     builder.Services.AddFluentValidationAutoValidation();
     builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
@@ -321,8 +329,11 @@ try
     }
 
     // ── Endpoints ────────────────────────────────────────────────────────────
+    app.UseResponseCompression();
     app.MapControllers();
     app.MapHealthChecks("/health");
+    app.MapGet("/status", () => Results.Ok(new { Status = "Running", Environment = app.Environment.EnvironmentName }));
+    app.MapGet("/version", () => Results.Ok(new { Version = "1.0.0", Name = "RetailMind API" }));
 
     Log.Information("RetailMind API starting up in {Environment} mode", app.Environment.EnvironmentName);
     await app.RunAsync();

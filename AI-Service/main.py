@@ -1,4 +1,5 @@
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field, validator
 import joblib
 import pandas as pd
@@ -11,6 +12,30 @@ app = FastAPI(
     description="REST API to serve Demand Forecasting and Delivery Prediction models natively in Python.",
     version="1.0.0"
 )
+
+# CORS configuration
+origins = os.getenv("CORS_ORIGINS", "http://localhost:3000,http://localhost:5173").split(",")
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+@app.get("/health", tags=["System"])
+def health_check():
+    return {"status": "healthy"}
+
+@app.get("/status", tags=["System"])
+def system_status():
+    env = os.getenv("APP_ENV", "development")
+    return {"status": "Running", "environment": env, "models_loaded": demand_model is not None}
+
+@app.get("/version", tags=["System"])
+def version_info():
+    return {"version": "1.0.0", "name": "RetailMind AI Service"}
+
 
 # Load Models globally so they stay in memory on server start
 try:
