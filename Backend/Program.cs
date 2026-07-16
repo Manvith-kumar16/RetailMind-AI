@@ -319,13 +319,30 @@ try
     // ── Auto-migrate + seed on startup ───────────────────────────────────────
     using (var scope = app.Services.CreateScope())
     {
+        var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
         var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-        if (app.Environment.IsDevelopment())
+        try
+        {
+            logger.LogInformation("Attempting to apply EF Core database migrations...");
+            
+            // Applies pending migrations to the database. Creates the database if it doesn't exist.
             await db.Database.MigrateAsync();
+            logger.LogInformation("Database migrations applied successfully.");
 
-        // Idempotent — seeds all roles + default Admin on every restart
-        await RoleSeeder.SeedAsync(scope.ServiceProvider);
+            logger.LogInformation("Attempting to seed identity roles...");
+            // Idempotent — seeds all roles + default Admin on every restart
+            await RoleSeeder.SeedAsync(scope.ServiceProvider);
+            logger.LogInformation("Roles seeded successfully.");
+        }
+        catch (Exception ex)
+        {
+            // Log the exact reason migrations failed before exiting
+            logger.LogCritical(ex, "FATAL ERROR: Database migration or seeding failed during startup.");
+            
+            // Terminate the application immediately. Do not allow it to run in a corrupted state.
+            throw;
+        }
     }
 
     // ── Endpoints ────────────────────────────────────────────────────────────
