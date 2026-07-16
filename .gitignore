@@ -43,3 +43,4 @@ desktop.ini
 ## EF Migrations (keep Migrations folder, exclude snapshots binaries)
 *.Designer.cs is excluded by bin rule above
 AI-Service/firebase-adminsdk.json
+node_modules/
