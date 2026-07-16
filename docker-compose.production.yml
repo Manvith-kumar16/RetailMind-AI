@@ -26,7 +26,7 @@ services:
 
   backend:
     build:
-      context: ./Backend
+      context: .
       dockerfile: Dockerfile
     environment:
       - ASPNETCORE_ENVIRONMENT=Production

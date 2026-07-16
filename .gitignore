@@ -1,46 +1,93 @@
-## .NET / ASP.NET Core
+##############################
+# .NET / ASP.NET Core
+##############################
+
 *.user
 *.suo
 *.userosscache
 *.sln.docstates
+
 .vs/
+.idea/
+.vscode/
+
 [Bb]in/
 [Oo]bj/
+
 packages/
-*.nupkg
-*.snupkg
-project.lock.json
-project.fragment.lock.json
 artifacts/
 
-## Logs
+*.nupkg
+*.snupkg
+
+##############################
+# React / Node
+##############################
+
+node_modules/
+Frontend/node_modules/
+
+dist/
+build/
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+##############################
+# Python
+##############################
+
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.venv/
+venv/
+env/
+
+##############################
+# Environment Files
+##############################
+
+.env
+.env.*
+!.env.example
+
+##############################
+# Firebase Secrets
+##############################
+
+AI-Service/firebase-adminsdk.json
+
+##############################
+# Certificates / Keys
+##############################
+
+*.pem
+*.key
+*.pfx
+
+##############################
+# Logs
+##############################
+
 Logs/
 *.log
 
-## Secrets / Environment
-appsettings.Development.json
-*.pfx
-*.pem
-*.key
-.env
-.env.*
-secrets.json
+##############################
+# OS Files
+##############################
 
-## Rider
-.idea/
-
-## VS Code
-.vscode/
-!.vscode/extensions.json
-!.vscode/launch.json
-!.vscode/tasks.json
-
-## OS
 .DS_Store
 Thumbs.db
 desktop.ini
 
-## EF Migrations (keep Migrations folder, exclude snapshots binaries)
-*.Designer.cs is excluded by bin rule above
-AI-Service/firebase-adminsdk.json
-node_modules/
+##############################
+# IDE
+##############################
+
+!.vscode/extensions.json
+!.vscode/tasks.json
+!.vscode/launch.json
