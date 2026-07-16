@@ -78,9 +78,9 @@ graph TD
         PostgreSQL[("🗄️ PostgreSQL 15 Container")]:::database
         Redis[("⚡ Redis Container")]:::database
 
-        Nginx -->|/ (Root)| Client
-        Nginx -->|/api/*| DotnetAPI
-        Nginx -->|/ai/*| PythonAPI
+        Nginx -->|"/ (Root)"| Client
+        Nginx -->|"/api/*"| DotnetAPI
+        Nginx -->|"/ai/*"| PythonAPI
 
         DotnetAPI -->|EF Core Core Logic| PostgreSQL
         DotnetAPI -->|Cache-Aside| Redis
