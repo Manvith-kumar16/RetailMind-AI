@@ -1,17 +1,12 @@
 # Stage 1: Build the runtime environment
-FROM python:3.11-slim as build
+FROM python:3.11-slim-bookworm as build
 WORKDIR /app
 
-# Install dependencies needed for compiling python packages if any
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential \
-    && rm -rf /var/lib/apt/lists/*
-
 COPY requirements.txt .
-RUN pip install --no-cache-dir gunicorn uvicorn && pip install --no-cache-dir -r requirements.txt
+RUN pip install --default-timeout=1000 --no-cache-dir gunicorn uvicorn && pip install --default-timeout=1000 --no-cache-dir -r requirements.txt
 
 # Stage 2: Final Production Image
-FROM python:3.11-slim as final
+FROM python:3.11-slim-bookworm as final
 WORKDIR /app
 
 # Copy installed packages from build stage
