@@ -139,6 +139,29 @@ Once Docker completes the build, Nginx will dynamically map everything to your `
 
 ---
 
+## 🚀 Deploying to AWS EC2
+
+What you need to do after every push (currently)
+
+1. SSH into your EC2 instance:
+```bash
+ssh -i ~/Downloads/retailmind-key.pem ubuntu@13.232.48.137
+```
+
+2. Then run:
+```bash
+cd ~/RetailMind-AI
+git pull origin main
+
+docker compose \
+  --env-file .env.production \
+  -f docker-compose.production.yml \
+  up -d --build
+```
+This updates the application on EC2 with the latest code.
+
+---
+
 ## 🔒 Default System Testing Credentials
 
 If you are running the system locally and the database migrations have run, the system automatically seeds a testing account:
