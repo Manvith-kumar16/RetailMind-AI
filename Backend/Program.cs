@@ -169,6 +169,12 @@ try
             opt.PermitLimit = 10;
             opt.Window = TimeSpan.FromSeconds(10);
         });
+        
+        options.AddFixedWindowLimiter("AuthPolicy", opt =>
+        {
+            opt.PermitLimit = 10;
+            opt.Window = TimeSpan.FromMinutes(1);
+        });
     });
 
     // ── Swagger / OpenAPI ─────────────────────────────────────────────────────

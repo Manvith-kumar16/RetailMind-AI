@@ -24,7 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\RetailMind.API\RetailMind.API.csproj" />
+    <ProjectReference Include="..\..\Backend\RetailMind.API.csproj" />
   </ItemGroup>
 
 </Project>

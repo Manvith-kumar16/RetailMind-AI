@@ -8,6 +8,7 @@ using RetailMind.API.Repositories.Inventory;
 using RetailMind.API.Services.Inventory;
 using FluentAssertions;
 using Xunit;
+using Microsoft.Extensions.Caching.Distributed;
 
 namespace RetailMind.Tests.Services
 {
@@ -15,6 +16,7 @@ namespace RetailMind.Tests.Services
     {
         private readonly Mock<IInventoryRepository> _repoMock;
         private readonly Mock<ILogger<InventoryService>> _loggerMock;
+        private readonly Mock<IDistributedCache> _cacheMock;
         private readonly AppDbContext _context;
 
         public InventoryServiceTests()
@@ -26,6 +28,9 @@ namespace RetailMind.Tests.Services
             _context = new AppDbContext(options);
             _repoMock = new Mock<IInventoryRepository>();
             _loggerMock = new Mock<ILogger<InventoryService>>();
+            _cacheMock = new Mock<IDistributedCache>();
+            _cacheMock.Setup(c => c.GetAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+                      .ReturnsAsync((byte[]?)null);
         }
 
         [Fact]
@@ -44,7 +49,7 @@ namespace RetailMind.Tests.Services
             _repoMock.Setup(r => r.GetInventoryByProductAsync(productId, It.IsAny<CancellationToken>()))
                      .ReturnsAsync(inventory);
 
-            var service = new InventoryService(_repoMock.Object, _context, _loggerMock.Object);
+            var service = new InventoryService(_repoMock.Object, _context, _loggerMock.Object, _cacheMock.Object);
 
             // Act
             var result = await service.GetStockAsync(productId);
@@ -71,7 +76,7 @@ namespace RetailMind.Tests.Services
             _repoMock.Setup(r => r.GetLowStockProductsAsync(It.IsAny<CancellationToken>()))
                      .ReturnsAsync(products);
 
-            var service = new InventoryService(_repoMock.Object, _context, _loggerMock.Object);
+            var service = new InventoryService(_repoMock.Object, _context, _loggerMock.Object, _cacheMock.Object);
 
             // Act
             var result = await service.GetLowStockAlertsAsync();
@@ -89,7 +94,7 @@ namespace RetailMind.Tests.Services
             _repoMock.Setup(r => r.GetInventoryByProductAsync(productId, It.IsAny<CancellationToken>()))
                      .ReturnsAsync((InventoryItem?)null);
 
-            var service = new InventoryService(_repoMock.Object, _context, _loggerMock.Object);
+            var service = new InventoryService(_repoMock.Object, _context, _loggerMock.Object, _cacheMock.Object);
 
             // Act & Assert
             await Assert.ThrowsAsync<KeyNotFoundException>(() => 

@@ -24,6 +24,9 @@ services:
       - ConnectionStrings__DefaultConnection=Host=db;Port=5432;Database=RetailMindDB;Username=postgres;Password=postgres_dev_password;
       - ConnectionStrings__Redis=redis:6379
       - MLServiceUrl=http://ai_service:8001
+      - JwtSettings__SecretKey=CHANGE_THIS_TO_A_VERY_LONG_RANDOM_SECRET_KEY_256_BITS_MIN
+      - DefaultAdmin__Email=admin@retailmind.ai
+      - DefaultAdmin__Password=AdminPassword123!
     depends_on:
       - db
       - redis
@@ -42,13 +45,13 @@ services:
       - retailmind_network
 
   db:
-    image: postgres:15-alpine
+    image: postgres:16-alpine
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres_dev_password
       - POSTGRES_DB=RetailMindDB
     ports:
-      - "5432:5432"
+      - "5433:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
